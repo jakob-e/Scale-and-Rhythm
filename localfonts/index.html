@@ -19,6 +19,7 @@
 				var name=localfonts[i].replace(/^\s+|\s+$/g,'');
 					html+='<tr>';
 					html+='<td class="count">' + (i+1) + '</td>';
+					html+='<td class="name">' + name + '</td>';
 					html+='<td class="fontsample" style="font-family:'+ (name.indexOf(' ')!=-1? '\''+name+'\'':name) +';" data-family="\''+name+'\'"><span>' + name + '</span></td>';
 					html+='<td class="size"></td>';
 					html+='<td class="chr_height"></td>';
@@ -107,7 +108,7 @@
 	* { margin:0;padding:0;}
 	body { padding:50px; }
 	#localfonts{position:absolute;top:-999em;}
-	label,input,th,.count,.size,.chr_height,.chr_width,.line_width,
+	label,input,th,.count,.size,.chr_height,.chr_width,.line_width,.name,
 	tfoot td {font-family:sans-serif; font-size:12px;text-align:left; }
 	label    { height:30px; float:left; clear:left; display:block;}
 	button,input    { float:left;margin-right:-100%;margin-left:120px; width:50px;text-align:center; }
@@ -132,8 +133,9 @@
 		<thead>
 		<tr>
 			<th></th>
-			<th>Font sample</th>
-			<th>Font size</th>
+			<th>Name</th>
+			<th>Sample</th>
+			<th>Size</th>
 			<th>Char height</th>
 			<th>Char width</th>
 			<th>Ideal line width</th>
@@ -143,6 +145,7 @@
 		<tr>
 			<td></td>
 			<td>Average</td>
+			<td></td>
 			<td></td>
 			<td class="th"></td>
 			<td class="ta"></td>
