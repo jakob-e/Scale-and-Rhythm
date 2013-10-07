@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Local Fonts</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="initial-scale=1" />
+<meta name="format-detection" content="telephone=no">
+
+	
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
+	<script>
+		function localfonts(localfonts){
+			localfonts.unshift('sans-serif','serif','cursive','monospace','fantasy');
+			console.log(localfonts);
+			var html='';
+			for(var i=0,l=localfonts.length;i<l;++i){
+				var name=localfonts[i].replace(/^\s+|\s+$/g,'');
+					html+='<tr>';
+					html+='<td class="count">' + (i+1) + '</td>';
+					html+='<td class="fontsample" style="font-family:'+ (name.indexOf(' ')!=-1? '\''+name+'\'':name) +';" data-family="\''+name+'\'"><span>' + name + '</span></td>';
+					html+='<td class="size"></td>';
+					html+='<td class="chr_height"></td>';
+					html+='<td class="chr_width"></td>';
+					html+='<td class="line_width"></td>';
+					html+='</tr>';
+			}
+			$('#localfontlist tbody').html(html);
+			$('fieldset').fadeIn();
+			localfontlistresize();
+		}
+		function localfontlistresize(){
+			var th=0;
+			var ta=0;
+			var ti=0;
+			$('#localfontlist tbody td.fontsample').each(function(){
+				var $parent=$(this).parent('tr')
+				var idealWidth=66;
+				$('p.test').css({'font-family':$(this).data('family')})
+				var c=$('p.test').text().length;
+				var w=$('p.test').width();
+				var s=$('#fontsize').val();//fontSize//$('p.test').height();
+				var h=$('p.test').height();
+				var a=Math.round(w/c*1000)/1000;
+				var ae=Math.round(a/16*1000)/1000;
+				var r=Math.round(a/s*1000)/1000;
+				var i=Math.round(a*idealWidth*1000)/1000;
+				var i=Math.ceil(a*idealWidth);
+				var ie=Math.round(a/16*idealWidth*1000)/1000;				
+				$parent.find('.size').text(s + 'px');
+				$parent.find('.chr_height').text(h + 'px');
+				$parent.find('.chr_width').text(a  + 'px');
+				$parent.find('.line_width').text(i + 'px');
+				th+=h;
+				ta+=a;
+				ti+=i;
+			})
+			var l=$('#localfontlist tbody td.fontsample').length;
+			$('#localfontlist .th').text(Math.round(th/l*1000)/1000 + 'px');
+			$('#localfontlist .ta').text(Math.round(ta/l*1000)/1000 + 'px');
+			// $('#localfontlist .ti').text(Math.round(ti/l*1000)/1000 + 'px');
+			$('#localfontlist .ti').text(Math.round(ti/l) + 'px');
+			// $('#localfontlist').fadeIn(1000);
+		}
+		$(document).on('ready',function(){
+	    	var flashvars={};
+			// Parameters
+		    var params={};
+				params.play='true';
+				params.loop='false';
+				params.menu='false';
+				params.quality='best';
+				params.scale='noscale';
+				params.salign='tl';
+				params.wmode='opaque';
+				params.bgcolor='#ffffff';
+				params.devicefont='true';
+				params.seamlesstabbing='true';
+				params.swliveconnect='true';
+				params.allowfullscreen='true';
+				params.allowscriptaccess='always';
+				params.allownetworking='all';
+				params.base='swf/';
+
+		    // Attributes
+		    var attributes={};
+			attributes.id='localfonts';
+			attributes.name='localfonts';
+
+    		// Embed
+    		swfobject.embedSWF('localfonts.swf?rnd='+Math.random()*9999,'localfonts','1px','1px','9.0.115','expressInstall.swf',flashvars,params,attributes);
+    		// test
+    	    function getMovie(movieName) {
+		        if (navigator.appName.indexOf("Microsoft") != -1) { return window[movieName]; } else { return document[movieName]; }
+    		}
+    		$('#update').on('click',function(e){
+    			e.preventDefault();
+    			var pct=$('#fontsize').val()/16*100 + '%'
+    			$('html').css({'font-size':pct});
+    			setTimeout(localfontlistresize,300);
+    		})
+
+    	});
+	</script>
+	<style>
+	* { margin:0;padding:0;}
+	body { padding:50px; }
+	#localfonts{position:absolute;top:-999em;}
+	label,input,th,.count,.size,.chr_height,.chr_width,.line_width,
+	tfoot td {font-family:sans-serif; font-size:12px;text-align:left; }
+	label    { height:30px; float:left; clear:left; display:block;}
+	button,input    { float:left;margin-right:-100%;margin-left:120px; width:50px;text-align:center; }
+	fieldset { border:none; padding:20px;display:none; }
+	td { margin:2px; background:#f9f9f9; padding:10px;}
+	th,tfoot td { margin:2px; background:#efefef; padding:10px; }
+	.msg {font-size:14px; color:red; font-family: sans-serif; }
+	.fontsample span { display:inline; border:1px solid red; }
+	/* background:#D5F8FF; */
+	p.test { font-size:1rem; display:inline; white-space:nowrap;position:absolute;top:-999em;}
+	</style>
+
+</head>
+
+<body>
+	<div id="localfonts"></div>
+	<fieldset>
+		<label>Base Font Size (px)<input type="text" value="16" id="fontsize"/></label>
+		<label><button  id="update">Update</button></label>
+	</fieldset>	
+	<table id="localfontlist">
+		<thead>
+		<tr>
+			<th></th>
+			<th>Font sample</th>
+			<th>Font size</th>
+			<th>Char height</th>
+			<th>Char width</th>
+			<th>Ideal line width</th>
+		</tr></thead>
+		<tbody><tr><td colspan="6" class="msg">Detecting Local Fonts...</td></tr></tbody>
+		<tfoot>
+		<tr>
+			<td></td>
+			<td>Average</td>
+			<td></td>
+			<td class="th"></td>
+			<td class="ta"></td>
+			<td class="ti"></td>
+		</tr></tfoot>		
+	</table>	
+
+	<!-- 3000 chars -->
+	<p class="test">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vitae eros nec quam faucibus mattis. Maecenas molestie sed ligula rutrum tincidunt. Nulla facilisi. Mauris pulvinar sollicitudin arcu, et viverra est vehicula id. Mauris sed magna urna. Suspendisse potenti. Ut nisl odio, sollicitudin id cursus eu, molestie ut lacus. Aenean lobortis ante in felis convallis, porta placerat velit vulputate. In consectetur, dui vel cursus mattis, leo turpis scelerisque velit, sit amet sodales tortor tortor malesuada nulla. Phasellus libero risus, imperdiet sed justo a, hendrerit placerat erat.Praesent vestibulum dui et sollicitudin elementum. Sed arcu libero, mattis nec interdum at, adipiscing sit amet tortor. Aenean porta eleifend quam facilisis fermentum. Integer nulla sapien, sagittis sed tincidunt sit amet, lacinia ut lorem. Mauris eget orci consectetur, feugiat quam sit amet, venenatis enim. Curabitur molestie neque eu lacus fermentum, ac placerat tellus faucibus. Ut quis ligula posuere, ornare nunc at, pharetra sem. Vestibulum hendrerit mauris nisi, ut mollis elit vulputate at. Duis vitae diam vitae libero elementum egestas ut faucibus libero. Nulla facilisi. In sem lorem, condimentum ut mollis nec, tristique et lorem. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.
+
+Vestibulum sed tortor et tellus tempus porta vel ac ligula. Aliquam erat volutpat. Morbi mattis nisi nisi, ac placerat nisl sagittis eget. Quisque aliquam dapibus interdum. Maecenas laoreet ullamcorper velit porttitor egestas. Morbi nec libero volutpat sapien fermentum ornare sit amet vitae felis. Suspendisse eget tempus risus. Ut odio velit, convallis vitae felis commodo, mollis porttitor enim. Nam tincidunt, nulla at pharetra semper, purus leo fermentum ipsum, et commodo nibh turpis vel elit. Integer elementum justo eget diam facilisis interdum.
+
+Ut vitae quam et dolor pretium fringilla a eget mi. Ut suscipit est et nunc varius, sed ullamcorper ipsum mollis. Sed iaculis vestibulum libero, id porttitor nisl pretium at. Etiam scelerisque justo ac risus aliquet, vitae congue sem pharetra. Nullam lacinia velit vel ante molestie elementum. Nulla mattis, justo quis pulvinar ultricies, felis arcu vestibulum augue, sed convallis eros justo eu tellus. Nam adipiscing malesuada ante, vitae tristique lectus. Maecenas egestas vehicula tellus, vel fermentum dolor facilisis sed. Nulla varius dolor ac nibh hendrerit, non hendrerit tellus pulvinar. Suspendisse potenti.
+ 
+Sed tempor diam tincidunt, dictum ipsum aliquam, placerat leo. Sed ultrices ante lorem, sed gravida mauris gravida a. Pellentesque tincidunt ante eu hendrerit blandit. Morbi rutrum risus arcu, eget egestas ante vulputate et. Cras eu blandit lectus, sit amet congue sem. Pellentesque sem mauris, consectetur non ullamcorper at, fermentum sed justo. Fusce sit amet nisi libero. Aenean ullamcorper sollicitudin magna quis ultrices. Nulla dapibus justo eu placerat rhoncus. Donec quis blandit enim.</p>
+</body>
+</html>
