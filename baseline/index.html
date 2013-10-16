@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Baseline</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="initial-scale=1" />
+<meta name="format-detection" content="telephone=no">
+
+
+	<style>
+		*{margin:0;padding:0;}
+		body > div { max-width:960px; margin:0 auto;font-size:100%;line-height:normal;}
+		#scalesamples p { border:1px solid #ddd; margin-bottom:20px; font-family:helvetica}
+		#scalesamples img { background:#ddd; height:1ex; position:relative; margin-right:-100%; width:100%; z-index:-1;    }
+	</style>
+
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
+
+	<script>
+
+	$(document).on('ready',function(e){
+	
+
+		var modularScale=[];
+		$('#scale').on('change',
+			function(e){
+				var scale=1/parseFloat($('#scale option:selected').val());
+				var base=parseInt($('#bfs').val());
+				var sign=parseInt($('#sfs').val());
+
+				var max=2560;
+				var p=base/scale;
+				console.log(scale,base,sign,p)
+				while(p < max){
+				    modularScale.push([Math.round(p*1000)/1000,Math.round(p/base*1000)/1000])
+				    p = p / scale;
+				}
+				var p=base;
+				while(p >=1){
+				    modularScale.push([Math.round(p*1000)/1000,Math.round(p/base*1000)/1000])
+				    p = p * scale;
+				}
+
+
+				var p=sign/scale;
+				while(p < max){
+				    modularScale.push([Math.round(p*1000)/1000,Math.round(p/base*1000)/1000])
+				    p = p / scale;
+				}
+
+				var p=sign;
+				while(p >=1){
+				    modularScale.push([Math.round(p*1000)/1000,Math.round(p/base*1000)/1000])
+				    p = p * scale;
+				}
+
+				modularScale.sort(function(a,b){return b[0]-a[0];})
+				console.log(modularScale);
+				$('ul#scalelist').empty();
+				for(var i=0,l=modularScale.length;i<l;++i){
+				   $('ul#scalelist').append('<li>'+modularScale[i][0] + ' - ' + modularScale[i][1]); 
+				}
+
+				$('div#scalesamples').empty();
+				for(var i=0,l=modularScale.length;i<l;++i){
+					if(modularScale[i][1]>10 || modularScale[i][1]<0.5){continue; }
+				    $('div#scalesamples').append('<p style="font-size:'+modularScale[i][1]+'em"><img>Lorem ipsum</p>'); //'+modularScale[i][1]+' 
+				}
+
+				 $('div#scalesamples').prepend('<p style="font-size:1em"><img>1234567890 @ &!?#$€%§ .:;,</p>');
+				 $('div#scalesamples').prepend('<p style="font-size:1em"><img>abcdefghijklmnopqrstuvwxyzæøå</p>');
+				 $('div#scalesamples').prepend('<p style="font-size:1em"><img>ABCDEFGHIJKLMNOPQRSTUVWXYZÆØÅ</p>');
+				 
+
+
+			});
+	})
+
+
+
+	</script>
+
+</head>
+
+<body>
+
+	<div>
+		<header></header>
+		<main>
+			<fieldset>
+				<label>Base font size      <input id="bfs" name="bfs" type="number" pattern="[0-9]*" min="0" max="99999" maxlength="5" size="6" value="16"/></label>
+				<label>Secondary font size <input id="sfs" name="sfs" type="number" pattern="[0-9]*" min="0" max="99999" maxlength="5" size="6" value="14"/></label>
+				<label>Base line height    <input id="blh" name="blh" type="number" pattern="[0-9]*" min="0" max="99999" maxlength="5" size="6" value="24"/></label>
+				<select id="scale" name="scale">
+					<option value="1.067">15:16 &#8211; minor second</option>
+					<option value="1.125">8:9 &#8211; major second</option>
+					<option value="1.2">5:6 &#8211; minor third</option>
+					<option value="1.25">4:5 &#8211; major third</option>
+					<option value="1.333">3:4 &#8211; perfect fourth</option>
+					<option value="1.414">1:√2 &#8211; aug. fourth / dim. fifth</option>
+					<option value="1.5" selected="selected">2:3 &#8211; perfect fifth</option>
+					<option value="1.6">5:8 &#8211; minor sixth</option>
+					<option value="1.618">1:1.618 &#8211; golden section</option>
+					<option value="1.667">3:5 &#8211; major sixth</option>
+					<option value="1.778">9:16 &#8211; minor seventh</option>
+					<option value="1.875">8:15 &#8211; major seventh</option>
+					<option value="2">1:2 &#8211; octave</option>
+					<option value="2.5">2:5 &#8211; major tenth</option>
+					<option value="2.667">3:8 &#8211; major eleventh</option>
+					<option value="3">1:3 &#8211; major twelfth</option>
+					<option value="4">1:4 &#8211; double octave</option>
+				</select>
+			</fieldset>	
+			<article>
+				<ul id="scalelist">
+				</ul>
+				<div id="scalesamples">
+				</div>
+			</article>
+		</main>
+		<footer>
+		</footer>
+	</div>
+</body>
+</html>
