@@ -11,18 +11,64 @@
 	<style>
 		*{margin:0;padding:0;}
 		body > div { max-width:960px; margin:0 auto;font-size:100%;line-height:normal;}
-		#scalesamples p { border:1px solid #ddd; margin-bottom:20px; font-family:helvetica}
+		#scalesamples p { border:1px solid #ddd; margin-bottom:20px;}
 		#scalesamples img { background:#ddd; height:1ex; position:relative; margin-right:-100%; width:100%; z-index:-1;    }
 	</style>
 
 
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"></script>
-
+	<script src="http://ajax.googleapis.com/ajax/libs/swfobject/2.2/swfobject.js"></script>
 	<script>
+	function localfonts(localfonts){
+		localfonts.unshift('sans-serif','serif','cursive','monospace','fantasy');
+		console.log(localfonts);
+		var opt='';
+		for(var i=0,l=localfonts.length;i<l;++i){
+			var name=localfonts[i].replace(/^\s+|\s+$/g,'');
+				opt+='<option value="\''+name+'\'">' + name + '</option>';
+		}
+		$('#fontfamily').html(opt);
+	}
 
 	$(document).on('ready',function(e){
 	
+		// =======================
+		// Local Font Detection
+		// Add Save to Cookie
+		// =======================
+    	var flashvars={};
+		// Parameters
+	    var params={};
+			params.play='true';
+			params.loop='false';
+			params.menu='false';
+			params.quality='best';
+			params.scale='noscale';
+			params.salign='tl';
+			params.wmode='opaque';
+			params.bgcolor='#ffffff';
+			params.devicefont='true';
+			params.seamlesstabbing='true';
+			params.swliveconnect='true';
+			params.allowfullscreen='true';
+			params.allowscriptaccess='always';
+			params.allownetworking='all';
+			params.base='swf/';
+
+	    // Attributes
+	    var attributes={};
+		attributes.id='localfonts';
+		attributes.name='localfonts';
+
+		// Embed
+		swfobject.embedSWF('localfonts.swf?rnd='+Math.random()*9999,'localfonts','1px','1px','9.0.115','expressInstall.swf',flashvars,params,attributes);
+		// test
+	    function getMovie(movieName) {
+	        if (navigator.appName.indexOf("Microsoft") != -1) { return window[movieName]; } else { return document[movieName]; }
+		}
+
+
+
 
 		var modularScale=[];
 		$('#scale').on('change',
@@ -77,6 +123,12 @@
 
 
 			});
+			// Set Font Family 
+			$('#fontfamily').on('change',function(){
+				$('#scalesamples p').hide();
+				$('#scalesamples p').css({'font-family':$(this).val()})
+				$('#scalesamples p').show();
+			})
 	})
 
 
@@ -88,7 +140,9 @@
 <body>
 
 	<div>
-		<header></header>
+		<header>
+			<div id="localfonts"></div>
+		</header>
 		<main>
 			<fieldset>
 				<label>Base font size      <input id="bfs" name="bfs" type="number" pattern="[0-9]*" min="0" max="99999" maxlength="5" size="6" value="16"/></label>
@@ -113,12 +167,15 @@
 					<option value="3">1:3 &#8211; major twelfth</option>
 					<option value="4">1:4 &#8211; double octave</option>
 				</select>
+				<select id="fontfamily" name="fontfamily">
+					<option>select font family</option>
+				</select>
 			</fieldset>	
 			<article>
-				<ul id="scalelist">
-				</ul>
 				<div id="scalesamples">
 				</div>
+				<ul id="scalelist">
+				</ul>				
 			</article>
 		</main>
 		<footer>
